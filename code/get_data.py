@@ -17,4 +17,5 @@ for i in range(0, df.shape[0]):
         trend.append(1)
 df['trend'] = trend
 df = df.drop(df.tail(1).index)
+df = df.drop(['Volume'], axis=1)
 df.to_csv('/Users/wyb/PycharmProjects/Assignment3/database/AAPL.csv', sep=',', header=True, index=True)
