@@ -5,7 +5,7 @@ import xgboost as xgb
 from matplotlib import pyplot as plt
 from bayes_opt import BayesianOptimization
 
-pre_length = 1
+pre_length = 3
 factor_num = 5
 
 data_input = open('C:/Users/221040114/Desktop/code/code/train_x.pkl', 'rb')
@@ -21,18 +21,9 @@ data_input = open('C:/Users/221040114/Desktop/code/code/train_y.pkl', 'rb')
 train_y = pickle.load(data_input)
 train_data = xgb.DMatrix(train_x, train_y)
 
-data_input = open('C:/Users/221040114/Desktop/code/code/test_x.pkl', 'rb')
-a = pickle.load(data_input)
 data_input = open('C:/Users/221040114/Desktop/code/code/forecast_y.pkl', 'rb')
-b = pickle.load(data_input)
-test_x = np.ones((205, pre_length*factor_num+1))
-for i in range(205):
-    for j in range(pre_length):
-        for k in range(factor_num):
-            test_x[i, j * pre_length + k] = a[i, j, k]
-    test_x[i, -1] = b[i, 0]
-print(test_x)
-test_x = xgb.DMatrix(test_x)
+a = pickle.load(data_input)
+test_x = xgb.DMatrix(a)
 
 data_input = open('C:/Users/221040114/Desktop/code/code/test_y.pkl', 'rb')
 test_y = pickle.load(data_input)
