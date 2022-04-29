@@ -8,7 +8,7 @@ data = pd.read_csv('/Users/wyb/PycharmProjects/Assignment3/database/AAPL.csv',
 pre_length = 3
 factor_num = 5
 
-train_x = np.ones((800, pre_length*factor_num))
+train_x = np.ones((800, pre_length, factor_num))
 for i in range(pre_length, 800+pre_length):
     x = np.ones((pre_length, factor_num))
     for j in range(factor_num):

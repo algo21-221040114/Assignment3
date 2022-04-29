@@ -17,7 +17,7 @@ def model_lstm(factor):
     for i in range(pre_length, 800+pre_length):
         for j in range(pre_length):
             train_x[i-pre_length, j, 0] = data.iloc[i-pre_length+j, factor]
-    train_y = data.iloc[pre_length:800+pre_length, -1]
+    train_y = data.iloc[pre_length:800+pre_length, factor]
     train_y = np.array(train_y)
 
     test_x = np.ones((data.shape[0]-800-pre_length, pre_length, 1))
@@ -45,7 +45,7 @@ def model_lstm(factor):
 forecast_y = pd.DataFrame()
 for i in range(factor_num):
     forecast_y[str(i)] = list(model_lstm(i))
-# print(forecast_y.shape)
+print(forecast_y)
 data_output = open('/Users/wyb/PycharmProjects/Assignment3/database/forecast_y.pkl', 'wb')
 pickle.dump(forecast_y, data_output)
 data_output.close()

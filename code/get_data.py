@@ -12,9 +12,9 @@ for i in range(0, df.shape[0]):
     if i == df.shape[0]-1:
         trend.append(1)
     elif df.iloc[i, -1] < df.iloc[i+1, -1]:
-        trend.append(0)
-    else:
         trend.append(1)
+    else:
+        trend.append(0)
 df['trend'] = trend
 df = df.drop(df.tail(1).index)
 df = df.drop(['Volume'], axis=1)
