@@ -15,21 +15,21 @@ factor_num = 5
 
 
 # Create train input for xgboost
-data = pd.read_csv('C:/Users/221040114/Desktop/Assignment3/Assignment3/database/AAPL.csv', index_col='Date')
+data = pd.read_csv('/Users/wyb/PycharmProjects/Assignment3/database/AAPL.csv', index_col='Date')
 train_x = np.ones((800, factor_num))
 for i in range(800):
     for j in range(factor_num):
         train_x[i, j] = data.iloc[i+pre_length, j]
-data_input = open('C:/Users/221040114/Desktop/Assignment3/Assignment3/database/train_y.pkl', 'rb')
+data_input = open('/Users/wyb/PycharmProjects/Assignment3/database/train_y.pkl', 'rb')
 train_y = pickle.load(data_input)
 train_data = xgb.DMatrix(train_x, train_y)
 
 # Create test input for xgboost
-data_input = open('C:/Users/221040114/Desktop/Assignment3/Assignment3/database/forecast_y.pkl', 'rb')
+data_input = open('/Users/wyb/PycharmProjects/Assignment3/database/forecast_y.pkl', 'rb')
 a = pickle.load(data_input)
 a = np.array(a).reshape((203, 5))  # 203 is the length of test data
 test_x = a
-data_input = open('C:/Users/221040114/Desktop/Assignment3/Assignment3/database/test_y.pkl', 'rb')
+data_input = open('/Users/wyb/PycharmProjects/Assignment3/database/test_y.pkl', 'rb')
 test_y = pickle.load(data_input)
 
 # # General XGBoost Model
@@ -77,7 +77,7 @@ model_class_bayes = BayesianOptimization(model_class,
                                         'colsample_bytree': (0.7, 1)
                                                   }
                                          )
-model_class_bayes.maximize(n_iter=100)
+model_class_bayes.maximize(n_iter=50)
 dict_params = model_class_bayes.max['params']
 dict_params['max_depth'] = int(dict_params['max_depth'])
 print(dict_params)
@@ -94,6 +94,6 @@ best_model = XGBClassifier(colsample_bytree=values[0],
 best_model.fit(train_x, train_y)
 pred_y = best_model.predict(test_x)
 pred_y = pd.DataFrame(pred_y)
-pred_y.to_csv('C:/Users/221040114/Desktop/Assignment3/Assignment3/database/pred_y.csv')
+pred_y.to_csv('/Users/wyb/PycharmProjects/Assignment3/database/pred_y.csv')
 # diff = (pred_y-test_y)**2
 # print(np.sum(diff))
