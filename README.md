@@ -1,6 +1,7 @@
 # Assignment3
 
 # Introduction
+
 This assignment refer to a paper, 'Forecast of LSTM-XGBoost in Stock Price Based on Optimization', published by Intelligent Automation & Soft Computing. 
 You can access to the paper through https://www.techscience.com/iasc/v29n3/43035/pdf. 
 
@@ -10,9 +11,11 @@ Another is to use LSTM as a pre-training model, the prediction price features of
 All research result is based on the data of APPLE from 2017.01.01 to 2020.12.31, you can adjust parameters according to different stocks.
 
 # Environment
+
 Pycharm (Professional Edition) Python 3.7
 
 # Requirements 
+
 numpy 
 
 pandas 
@@ -28,6 +31,7 @@ BayesianOptimization
 As this strategy utilize the xgboost package, it's highly recommended conduct in Windows or Mac installed brew.
 
 # Model Elaboration
+
 The original feature data is High, Low, Open, Close, Adj Close.
 As there are totally 1000+ data, 80% is set to be the train set.
 We have a target date, t.
@@ -45,3 +49,14 @@ In this process, we use Bayesian Optimization to search the optimal parameters o
 Third, using the prediction value (800, 5) from LSTM as the input for trained XGBoost Classifier model, with the best parameters chosen by Bayesian Optimization, to classify the trend from t to t+1. 
 
 # Back-test Result
+
+The back_test period is from 2020.03.12 to 2020.12.31. 
+The annualized return is about 274%, the maximum drawdown is 19.28%.
+
+![img.png](img.png)
+
+# Conclusion
+
+
+
+

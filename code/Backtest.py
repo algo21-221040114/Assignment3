@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 # Load data
 data = pd.read_csv('/Users/wyb/PycharmProjects/Assignment3/database/AAPL.csv',
@@ -44,12 +45,15 @@ class Backtest:
 
     def annulized(self):
         a = self.cumulative_ret[-1]
-        print(a)
+        print(self.cumulative_ret)
+        plt.plot(self.cumulative_ret)
+        plt.title('Cumulative return')
+        plt.show()
         annualized_ret = a**(252/self.test_length)
         print('Annualized return is ' + str(annualized_ret))
 
     def sharpe(self):
-        mu = np.mean(self.ret)*252/(self.test_length-1)
+        mu = np.mean(self.ret)*252
         sigma = np.std(self.ret)*np.sqrt(252/self.test_length-1)
         print('Sharpe ratio is ' + str(mu/sigma))
 
