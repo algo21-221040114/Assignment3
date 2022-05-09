@@ -1,7 +1,5 @@
 import pandas as pd
 import numpy as np
-from datetime import datetime
-import backtrader as bt
 
 # Load data
 data = pd.read_csv('/Users/wyb/PycharmProjects/Assignment3/database/AAPL.csv',
@@ -14,80 +12,64 @@ df.index = pd.to_datetime(df.index)
 # print(df.head(20))
 
 
-# Design strategy
-class myStrategy(bt.Strategy):
-    """
-    Design strategy
-    """
-    params = dict(
-    )
+# Back-test
+class Backtest:
 
-    def __init__(self):
-        # open, close, predicted
-        self.data_open = self.datas[0].open
-        self.data_close = self.datas[0].close
-        self.data_trend = self.datas[0][-1]  # strategy signal
+    def __init__(self, dataset):
+        self.ret = []
+        self.cumulative_ret = [1]
+        self.position = 0
+        self.cost = 0
+        self.payoff = 0
+        self.close = list(dataset['Close'])
+        self.signal = pd.DataFrame(dataset['trend'])
+        self.test_length = dataset.shape[0]
 
-        # order/buy price/buy commission
-        self.order = None
-        self.price = None
-        self.comm = None
-
-    # logging function
-    def log(self, txt):
-        dt = self.datas[0].datetime.date(0).isoformat()
-        print(f'{dt}, {txt}')
-
-    def notify_order(self, order):
-        if order.status in [order.Submitted, order.Accepted]:
-            return
-        # report executed order
-        if order.status in [order.Completed]:
-            if order.isbuy():
-                self.log(f'BUY EXECUTED - -- Price: {order.executed.price: .2f}, '
-                         f'Cost: {order.executed.value: .2f}, '
-                         f'Commission: {order.executed.comm: .2f}')
-                self.price = order.executed.price
-                self.comm = order.executed.comm
+    def trade(self):
+        for i in range(0, self.test_length-1):
+            if self.signal.iloc[i, 0] == 1 and self.position == 0:
+                print(str(self.signal.index[i]) + ' Buy order')
+                print('Exe price: ' + str(self.close[i]))
+                self.position = 1
+            elif self.signal.iloc[i, 0] == 0 and self.position == 1:
+                print(str(self.signal.index[i]) + ' Sell order')
+                print('Exe price: ' + str(self.close[i]))
+                self.position = 0
+            if self.position == 1:
+                self.ret.append(self.close[i+1]/self.close[i]-1)
+                self.cumulative_ret.append(self.cumulative_ret[-1] * (1+self.ret[-1]))
             else:
-                self.log(f'SELL EXECUTED - -- Price: {order.executed.price: .2f},'
-                         f'Cost: {order.executed.value: .2f}, '
-                         f'Commission: {order.executed.comm: .2f}')
-        elif order.status in [order.Canceled, order.Margin, order.Rejected]:
-            # Failed order
-            self.log('Order Failed')
-        self.order = None
+                self.ret.append(0)
+                self.cumulative_ret.append(self.cumulative_ret[-1] * 1)
 
-    def next(self):
-        # if there is order, won't create new order
-        if self.order:
-            return
+    def annulized(self):
+        a = self.cumulative_ret[-1]
+        print(a)
+        annualized_ret = a**(252/self.test_length)
+        print('Annualized return is ' + str(annualized_ret))
 
-        if not self.position:
-            if self.data_trend > 0:
-                # all-in
-                print(self.broker.get_value())
-                size = int(self.broker.get_value()/self.datas[0].open)
-                # buy order
-                self.log(f'BUY CREATED --- Size: {size}, '
-                         f'Cash: {self.broker.getcash():.2f},'
-                         f'Open: {self.data_open[0]}')
-                self.order = self.buy(size=size)
-        else:
-            if self.data_trend == 0:
-                # sell order
-                self.log(f'SELL CREATED --- Size: {self.position.size}')
-                self.order = self.sell(size=self.position.size)
+    def sharpe(self):
+        mu = np.mean(self.ret)*252/(self.test_length-1)
+        sigma = np.std(self.ret)*np.sqrt(252/self.test_length-1)
+        print('Sharpe ratio is ' + str(mu/sigma))
+
+    def maxdrawdown(self):
+        mdd = -1
+        for i in range(len(self.cumulative_ret)-1):
+            for j in range(i+1, len(self.cumulative_ret)):
+                if self.cumulative_ret[j] < self.cumulative_ret[i]:
+                    mdd = max(mdd, 1-self.cumulative_ret[j]/self.cumulative_ret[i])
+                else:
+                    break
+        print('Max Drawdown is ' + str(mdd))
+
+    def run(self):
+        Backtest.trade(self)
+        Backtest.annulized(self)
+        Backtest.sharpe(self)
+        Backtest.maxdrawdown(self)
 
 
-cerebro = bt.Cerebro()
-cerebro.broker.setcash(1000000.0)
-cerebro.broker.setcommission(0.0002)
-data = bt.feeds.PandasData(dataname=df, fromdate=datetime(2020, 3, 12), todate=datetime(2020, 12, 29),
-                           timeframe=bt.TimeFrame.Days)
-cerebro.adddata(data)
-cerebro.addstrategy(myStrategy)
-cerebro.broker = bt.brokers.BackBroker(slip_perc=0.002)
-cerebro.addanalyzer(bt.analyzers.PyFolio, _name='myPortfolio')
-results = cerebro.run()
+bt = Backtest(df)
+bt.run()
 
