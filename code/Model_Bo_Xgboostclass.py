@@ -5,35 +5,30 @@ import xgboost as xgb
 from xgboost import XGBClassifier
 from matplotlib import pyplot as plt
 from sklearn.metrics import accuracy_score
-from sklearn.metrics import roc_auc_score
 from bayes_opt import BayesianOptimization
 
+# This model should run in Windows or Mac installed xgboost !!!
+
+# Parameters
 pre_length = 3
 factor_num = 5
 
+
+# Create train input for xgboost
 data = pd.read_csv('C:/Users/221040114/Desktop/Assignment3/Assignment3/database/AAPL.csv', index_col='Date')
-# data_input = open('C:/Users/221040114/Desktop/Assignment3/Assignment3/database/train_x.pkl', 'rb')
-# a = pickle.load(data_input)
 train_x = np.ones((800, factor_num))
 for i in range(800):
     for j in range(factor_num):
         train_x[i, j] = data.iloc[i+pre_length, j]
-print(train_x.shape)
-
 data_input = open('C:/Users/221040114/Desktop/Assignment3/Assignment3/database/train_y.pkl', 'rb')
 train_y = pickle.load(data_input)
-print(train_y)
 train_data = xgb.DMatrix(train_x, train_y)
 
+# Create test input for xgboost
 data_input = open('C:/Users/221040114/Desktop/Assignment3/Assignment3/database/forecast_y.pkl', 'rb')
 a = pickle.load(data_input)
-a = np.array(a).reshape((203, 5))
-print(a.shape)
-print(type(a))
-print(a)
+a = np.array(a).reshape((203, 5))  # 203 is the length of test data
 test_x = a
-# test_x = xgb.DMatrix(a)
-
 data_input = open('C:/Users/221040114/Desktop/Assignment3/Assignment3/database/test_y.pkl', 'rb')
 test_y = pickle.load(data_input)
 
