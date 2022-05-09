@@ -33,6 +33,8 @@ As there are totally 1000+ data, 80% is set to be the train set.
 We have a target date, t.
 
 First, we should train the LSTM model to obtain the prediction value of five feature data for the target day.
+Here is a parameter pre_length, which is the length of previous data we used to predict the price in target date.
+I have experienced several values for that, and pre_length=3 is a good choice.
 LSTM model is trained with t-1, t-2, t-3 price data, and each feature is trained separately to find its own principle.
 So, the input data is an array (800, 3, 1).
 

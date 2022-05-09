@@ -77,7 +77,7 @@ model_class_bayes = BayesianOptimization(model_class,
                                         'colsample_bytree': (0.7, 1)
                                                   }
                                          )
-model_class_bayes.maximize(n_iter=50)
+model_class_bayes.maximize(n_iter=100)
 dict_params = model_class_bayes.max['params']
 dict_params['max_depth'] = int(dict_params['max_depth'])
 print(dict_params)
