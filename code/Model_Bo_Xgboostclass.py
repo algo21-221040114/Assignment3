@@ -52,12 +52,12 @@ test_y = pickle.load(data_input)
 # Build target function
 def model_class(max_depth, learning_rate, min_child_weight, reg_alpha, colsample_bytree):
 
-    model = XGBClassifier(max_depth=int(max_depth),
-                          learning_rate=learning_rate,
-                          min_child_weight=min_child_weight,
-                          reg_alpha=reg_alpha,
-                          colsample_bytree=colsample_bytree,
-                          objective='binary:logistic',
+    model = XGBClassifier(max_depth=int(max_depth),  # 树的深度,最大的迭代次数
+                          learning_rate=learning_rate,  # 学习率
+                          min_child_weight=min_child_weight,  # 子节点中最小的样本权重和
+                          reg_alpha=reg_alpha,  # L1正则项的权重，惩罚项，限制树节点数量，压制复杂度
+                          colsample_bytree=colsample_bytree,  # 对特征采样的比例
+                          objective='binary:logistic',  # 二分类的逻辑回归
                           seed=0,
                           use_label_encoder=False,
                           eval_metric='logloss')
