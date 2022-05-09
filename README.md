@@ -57,6 +57,10 @@ The annualized return is about 274%, the maximum drawdown is 19.28%.
 
 # Conclusion
 
+If there are no device constraints, more data should be used to train and test the model. 
+
+Bayesian Optimization is a good automation method to select parameters.
+
 
 
 
